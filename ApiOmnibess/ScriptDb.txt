@@ -5,10 +5,10 @@ USE OmniBees;
 
 CREATE TABLE Cotacao (
     Id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
-    IdProduto INT NOT NULL, -- Alterado para INT
+    IdProduto INT NOT NULL,
     DataCriacao DATETIME NOT NULL,
     DataAtualizacao DATETIME NOT NULL,
-    IdParceiro INT NOT NULL, -- Alterado para INT
+    IdParceiro INT NOT NULL,
     NomeSegurado NVARCHAR(100) NOT NULL,
     DDD NVARCHAR(5) NULL,
     Telefone NVARCHAR(15) NULL,
@@ -23,10 +23,10 @@ GO
 
 CREATE TABLE CotacaoBeneficiario (
     Id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
-    IdCotacao INT NOT NULL, -- Alterado para INT
+    IdCotacao INT NOT NULL,
     Nome NVARCHAR(100) NOT NULL,
     Percentual DECIMAL(5,2) NOT NULL,
-    IdParentesco INT NOT NULL, -- Alterado para INT
+    IdParentesco INT NOT NULL,
 
     CONSTRAINT FK_CotacaoBeneficiario_Cotacao FOREIGN KEY (IdCotacao)
         REFERENCES Cotacao(Id)
@@ -36,8 +36,8 @@ GO
 
 CREATE TABLE CotacaoCobertura (
     Id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
-    IdCotacao INT NOT NULL, -- Alterado para INT
-    IdCobertura INT NOT NULL, -- Alterado para INT
+    IdCotacao INT NOT NULL,
+    IdCobertura INT NOT NULL,
     ValorDesconto DECIMAL(18,2) NULL,
     ValorAgravo DECIMAL(18,2) NULL,
     ValorTotal DECIMAL(18,2) NOT NULL,
