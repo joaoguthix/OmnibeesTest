@@ -1,10 +1,8 @@
 ﻿using Dapper;
 using Domain.Entities;
 using Domain.Interfaces.InterfaceRepository;
-using Infrastructure.Configuration.Context;
 using Infrastructure.Configuration.Dapper;
 using Infrastructure.Configuration.UnitOfWork;
-using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repository.ProdutoRepositories
 {
@@ -41,6 +39,7 @@ namespace Infrastructure.Repository.ProdutoRepositories
             return await conn.QueryFirstOrDefaultAsync<Produto>(sql, new { Id = id });
         }
 
+        //exemplo de uso do EF
         public async Task CriarAsync(Produto produto)
         {
             try

@@ -49,7 +49,7 @@ namespace Application.Services
                 await _uow.BeginTransactionAsync();
                 var getCotacao = await _cotacaoBusiness.GetCotacaoByIdAsync(idCotacao, secret);
 
-                await _cotacaoCoberturaBusiness.AddCotacaoCoberturaAsync(cotacaoCobertura, getCotacao);
+                await _cotacaoCoberturaBusiness.AddCotacaoCoberturaAsync(cotacaoCobertura, getCotacao, true);
 
                 await _cotacaoBusiness.AtualizarPremioAsync(getCotacao, cotacaoCobertura);
                 await _uow.CommitAsync();

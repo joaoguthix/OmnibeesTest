@@ -38,66 +38,66 @@ namespace OmnibeesTest.CotacaoTests
             var cotacao = new Cotacao
             {
                 NomeSegurado = null,
-                Nascimento = null
+                Nascimento = DateTime.Now.AddYears(-30),
             };
 
             // Act & Assert
-            Assert.ThrowsAsync<ArgumentException>(async () => await _cotacaoBusiness.AddCotacaoAsync(cotacao));
+            Assert.ThrowsAsync<ArgumentException>(async () => await _cotacaoBusiness.AddCotacaoAsync(cotacao, "Secret"));
         }
-        //[Test]
-        //public async Task AddCotacaoAsync_DeveAdicionarComSucesso()
-        //{
-        //    // Arrange
-        //    var cotacao = new Cotacao
-        //    {
-        //        NomeSegurado = "João",
-        //        Nascimento = DateTime.Now.AddYears(-30),
-        //        IdProduto = 1,
-        //        ImportanciaSegurada = 1500,
-        //        DDD = 12,
-        //        Telefone = 99999999
-        //    };
+        [Test]
+        public async Task AddCotacaoAsync_DeveAdicionarComSucesso()
+        {
+            // Arrange
+            var cotacao = new Cotacao
+            {
+                NomeSegurado = "João",
+                Nascimento = DateTime.Now.AddYears(-30),
+                IdProduto = 1,
+                ImportanciaSegurada = 1500,
+                DDD = 12,
+                Telefone = 99999999
+            };
 
-        //    _faixaIdadeBusinessMock.Setup(f => f.GetFaixaIdadesAsync())
-        //        .ReturnsAsync(new List<FaixaIdade> { new FaixaIdade { IdadeMinima = 18, IdadeMaxima = 60 } });
+            _faixaIdadeBusinessMock.Setup(f => f.GetFaixaIdadesAsync())
+                .ReturnsAsync(new List<FaixaIdadeDto> { new FaixaIdadeDto { IdadeMinima = 18, IdadeMaxima = 60 } });
 
-        //    _produtoBusinessMock.Setup(p => p.ObterPorIdAsync(cotacao.IdProduto))
-        //        .ReturnsAsync(new Produto { BaseValue = 1000, Limit = 2000 });
+            _produtoBusinessMock.Setup(p => p.ObterPorIdAsync(cotacao.IdProduto))
+                .ReturnsAsync(new Produto { BaseValue = 1000, Limit = 2000 });
 
-        //    _cotacaoRepositoryMock.Setup(r => r.AddCotacaoAsync(cotacao)).ReturnsAsync(1);
+            _cotacaoRepositoryMock.Setup(r => r.AddCotacaoAsync(cotacao)).ReturnsAsync(1);
 
-        //    // Act
-        //    var result = await _cotacaoBusiness.AddCotacaoAsync(cotacao);
+            // Act
+            var result = await _cotacaoBusiness.AddCotacaoAsync(cotacao, "Secret");
 
-        //    // Assert
-        //    Assert.AreEqual(1, result);
-        //}
-        //[Test]
-        //public async Task AtualizarCotacaoAsync_DeveAtualizarComSucesso()
-        //{
-        //    // Arrange
-        //    var cotacao = new Cotacao
-        //    {
-        //        NomeSegurado = "João",
-        //        Nascimento = DateTime.Now.AddYears(-25),
-        //        IdProduto = 1,
-        //        ImportanciaSegurada = 1200,
-        //        DDD = 12,
-        //        Telefone = 99999999
-        //    };
+            // Assert
+            Assert.AreEqual(1, result);
+        }
+        [Test]
+        public async Task AtualizarCotacaoAsync_DeveAtualizarComSucesso()
+        {
+            // Arrange
+            var cotacao = new Cotacao
+            {
+                NomeSegurado = "João",
+                Nascimento = DateTime.Now.AddYears(-25),
+                IdProduto = 1,
+                ImportanciaSegurada = 1200,
+                DDD = 12,
+                Telefone = 99999999
+            };
 
-        //    _faixaIdadeBusinessMock.Setup(f => f.GetFaixaIdadesAsync())
-        //        .ReturnsAsync(new List<FaixaIdade> { new FaixaIdade { IdadeMinima = 18, IdadeMaxima = 60 } });
+            _faixaIdadeBusinessMock.Setup(f => f.GetFaixaIdadesAsync())
+                .ReturnsAsync(new List<FaixaIdadeDto> { new FaixaIdadeDto { IdadeMinima = 18, IdadeMaxima = 60 } });
 
-        //    _produtoBusinessMock.Setup(p => p.ObterPorIdAsync(cotacao.IdProduto))
-        //        .ReturnsAsync(new Produto { BaseValue = 1000, Limit = 2000 });
+            _produtoBusinessMock.Setup(p => p.ObterPorIdAsync(cotacao.IdProduto))
+                .ReturnsAsync(new Produto { BaseValue = 1000, Limit = 2000 });
 
-        //    // Act
-        //    await _cotacaoBusiness.AtualizarCotacaoAsync(cotacao);
+            // Act
+            await _cotacaoBusiness.AtualizarCotacaoAsync(cotacao);
 
-        //    // Assert
-        //    _cotacaoRepositoryMock.Verify(r => r.AtualizarCotacaoAsync(cotacao), Times.Once);
-        //}
+            // Assert
+            _cotacaoRepositoryMock.Verify(r => r.AtualizarCotacaoAsync(cotacao), Times.Once);
+        }
 
         [Test]
         public async Task AtualizarPremioAsync_DeveAtualizarPremioComSucesso()

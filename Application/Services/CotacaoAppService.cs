@@ -35,7 +35,7 @@ namespace Application.Services
             try
             {
                 var mapCotacao = CotacaoMap.MapToCotacaoEntity(cotacao);
-                mapCotacao.Id = await _cotacaoBusiness.AddCotacaoAsync(mapCotacao);
+                mapCotacao.Id = await _cotacaoBusiness.AddCotacaoAsync(mapCotacao, cotacao.Secret);
 
                 if (cotacao.CotacaoesCoberturas.Count() > 0)
                 {
@@ -86,11 +86,11 @@ namespace Application.Services
             }
         }
 
-        public async Task<CotacaoAggregate?> GetCotacaoDetailsByIdAsync(int idCotacao, string secret)
+        public async Task<CotacaoAggregateDTO> GetCotacaoDetailsByIdAsync(int idCotacao, string secret)
         {
             try
             {
-                return await _cotacaoBusiness.GetCotacaoDetailsByIdAsync(idCotacao, secret);
+                return CotacaoMap.MapToCotacaoAggregate(await _cotacaoBusiness.GetCotacaoDetailsByIdAsync(idCotacao, secret));
             }
             catch (Exception ex)
             {
@@ -128,34 +128,5 @@ namespace Application.Services
             }
         }
 
-        //public async Task AtualizarCotacaoAsync(CotacaoRequestDTO cotacaoDto)
-        //{
-        //    await _uow.BeginTransactionAsync();
-        //    try
-        //    {
-        //        var mapCotacao = CotacaoMap.MapToCotacaoEntity(cotacaoDto);
-
-        //        await _cotacaoBusiness.AtualizarCotacaoAsync(mapCotacao);
-
-        //        if (cotacaoDto.CotacaoesCoberturas.Any())
-        //        {
-        //            await _cotacaoCoberturaAppService.AtualizarCotacaoCoberturasAsync(cotacaoDto.CotacaoesCoberturas, mapCotacao);
-        //        }
-
-        //        if (cotacaoDto.CotacaoBeneficiarios.Any())
-        //        {
-        //            await _cotacaBeneficiarioAppService.AtualizarCotacaoBeneficiariosAsync(cotacaoDto.CotacaoBeneficiarios, mapCotacao.Id);
-        //        }
-
-        //        await _cotacaoBusiness.AtualizarPremioAsync(mapCotacao, cotacaoDto.CotacaoesCoberturas);
-
-        //        await _uow.CommitAsync();
-        //    }
-        //    catch (Exception)
-        //    {
-        //        await _uow.RollbackAsync();
-        //        throw;
-        //    }
-        //}
     }
 }

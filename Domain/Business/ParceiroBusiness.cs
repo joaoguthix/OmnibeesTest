@@ -25,6 +25,10 @@ namespace Domain.Business
         {
             try
             {
+                if(string.IsNullOrEmpty(secret))
+                {
+                    throw new ArgumentException("Secret não pode ser nulo ou vazio.");
+                }
                 var response = await _parceiroRepository.GetParceiroBySecretAsync(secret);
                 if (response == null)
                 {

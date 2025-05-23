@@ -3,7 +3,6 @@ using Domain.Enum;
 using Domain.Interfaces.InterfaceBusiness;
 using Domain.Interfaces.InterfaceRepository;
 using Domain.Utils;
-using System.Globalization;
 
 namespace Domain.Business
 {
@@ -24,11 +23,15 @@ namespace Domain.Business
             _cotacaoBusiness = cotacaoBusiness;
         }
 
-        public async Task<List<int>> AddCotacaoCoberturaAsync(List<CotacaoCobertura> cotacaoCobertura, Cotacao cotacao)
+        public async Task<List<int>> AddCotacaoCoberturaAsync(List<CotacaoCobertura> cotacaoCobertura, Cotacao cotacao, bool addNovaCobertura = false)
         {
             try
             {
-                await ValidarCotacaoCobertura(cotacaoCobertura);
+                await ValidarCotacaoCobertura(cotacaoCobertura, addNovaCobertura);
+                if (addNovaCobertura)
+                {
+                    await ValidateAddNewCobertura(cotacaoCobertura, cotacao);
+                }
                 await CalculateValueCobertura(cotacaoCobertura, cotacao);
                 List<int> responseIds = new List<int>();
                 foreach (var item in cotacaoCobertura)
@@ -43,6 +46,20 @@ namespace Domain.Business
                 throw;
             }
         }
+
+        private async Task ValidateAddNewCobertura(List<CotacaoCobertura> cotacaoCobertura, Cotacao cotacao)
+        {
+            var getCobertura = await _cotacaoCoberturaRepository.GetCotacaoCoberturaByIdCotacaoAsync(cotacao.Id, cotacao.IdParceiro);
+
+            var duplicateCoberturas = cotacaoCobertura.Select(cc => cc.IdCobertura)
+                                                      .Intersect(getCobertura.Select(gc => gc.IdCobertura));
+
+            if (duplicateCoberturas.Any())
+            {
+                throw new ArgumentException("Não é permitido ter duas Coberturas iguais.");
+            }
+        }
+
         public async Task RemoverCotacaoCoberturaAsync(int idCotacao, string secret, int removeCoberturaId)
         {
             var parceiro = await _parceiroBusiness.GetParceiroBySecretAsync(secret);
@@ -60,15 +77,15 @@ namespace Domain.Business
 
             var coberturasRestantes = coberturasAtuais.Where(c => c.Id != removeCoberturaId).ToList();
 
-            await ValidarCotacaoCobertura(coberturasRestantes);
+            await ValidarCotacaoCobertura(coberturasRestantes, false);
 
             await _cotacaoCoberturaRepository.RemoveCotacaoCoberturaAsync(removeCoberturaId);
 
             var cotacao = await _cotacaoBusiness.GetCotacaoByIdAsync(idCotacao, secret);
-            
+
             var novoPremio = await _cotacaoBusiness.CalculateValuePremio(cotacao, coberturasRestantes);
 
-            cotacao.Premio = novoPremio;
+            cotacao.Premio = novoPremio.GetValueOrDefault();
 
             await _cotacaoBusiness.AtualizarCotacaoAsync(cotacao);
         }
@@ -81,7 +98,7 @@ namespace Domain.Business
                     throw new ArgumentException("Id da cotação não pode ser zero");
                 }
                 var parceiro = await _parceiroBusiness.GetParceiroBySecretAsync(secret);
-                
+
                 return await _cotacaoCoberturaRepository.GetCotacaoCoberturaByIdCotacaoAsync(idCotacao, parceiro.Id);
             }
             catch (Exception e)
@@ -95,7 +112,7 @@ namespace Domain.Business
             var coberturas = await _coberturaBusiness.GetCoberturasAsync();
             var faixaIdades = await _faixaIdadeBusiness.GetFaixaIdadesAsync();
 
-            int idadeSegurado = DateTime.Now.Year - cotacao.Nascimento.GetValueOrDefault().Year;
+            int idadeSegurado = DateTime.Now.Year - cotacao.Nascimento.Year;
 
             var faixaIdade = faixaIdades.FirstOrDefault(f => idadeSegurado >= f.IdadeMinima && idadeSegurado <= f.IdadeMaxima);
 
@@ -145,7 +162,7 @@ namespace Domain.Business
             return Convert.ToDecimal(clean);
         }
 
-        private async Task ValidarCotacaoCobertura(List<CotacaoCobertura> cotacao)
+        private async Task ValidarCotacaoCobertura(List<CotacaoCobertura> cotacao, bool addNovaCobertura)
         {
 
             if (cotacao == null || !cotacao.Any())
@@ -160,7 +177,7 @@ namespace Domain.Business
 
             if (cotacao.GroupBy(x => x.IdCobertura).Any(g => g.Count() > 1))
             {
-                throw new ArgumentException("Não é permitido ter duas cotações iguais");
+                throw new ArgumentException("Não é permitido ter duas Coberturas iguais");
             }
 
             var coberturas = await _coberturaBusiness.GetCoberturasAsync();
@@ -177,17 +194,18 @@ namespace Domain.Business
                     throw new Exception($"Cobertura com Id {item.IdCobertura} não encontrada");
                 }
             }
-
-            if (!cotacao.Any(x => coberturas.Any(c => c.Id == x.IdCobertura && c.Type.NormalizeToCompare() == TypeCobertura.Basica.ToString().NormalizeToCompare())))
+            if (!addNovaCobertura)
             {
-                throw new ArgumentException("Obrigatório uma Cobertura do tipo básica");
+                if (!cotacao.Any(x => coberturas.Any(c => c.Id == x.IdCobertura && c.Type.NormalizeToCompare() == TypeCobertura.Basica.ToString().NormalizeToCompare())))
+                {
+                    throw new ArgumentException("Obrigatório uma Cobertura do tipo básica");
+                }
             }
-
-
             if (!cotacao.Any(x => coberturas.Any(c => c.Id == x.IdCobertura && c.Type.NormalizeToCompare() == TypeCobertura.Adicional.ToString().NormalizeToCompare())))
             {
                 throw new ArgumentException("Obrigatório ao menos uma Cobertura do tipo adicional");
             }
+
         }
     }
 }

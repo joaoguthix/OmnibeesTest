@@ -17,6 +17,7 @@ namespace Infrastructure.Repository.LogRepositories
             _uow = uow;
         }
 
+        //exemplo para logs de rastreio
         public async Task RegistrarLogAsync(string descricao)
         {
             var sql = "INSERT INTO LogOperacao (Descricao) VALUES (@desc)";

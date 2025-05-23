@@ -24,15 +24,13 @@ namespace Application.DTOs.Maps
             if (!string.IsNullOrWhiteSpace(cotacaoAtualizada.Documento) && cotacaoExistente.Documento != cotacaoAtualizada.Documento)
                 cotacaoExistente.Documento = cotacaoAtualizada.Documento;
 
-            if (cotacaoAtualizada.Nascimento.HasValue && cotacaoExistente.Nascimento != cotacaoAtualizada.Nascimento)
-                cotacaoExistente.Nascimento = cotacaoAtualizada.Nascimento;
-
             if (cotacaoAtualizada.ImportanciaSegurada != cotacaoExistente.ImportanciaSegurada)
                 cotacaoExistente.ImportanciaSegurada = cotacaoAtualizada.ImportanciaSegurada;
 
             if (cotacaoAtualizada.IdProduto != cotacaoExistente.IdProduto)
                 cotacaoExistente.IdProduto = cotacaoAtualizada.IdProduto;
 
+            cotacaoExistente.Nascimento = cotacaoAtualizada.Nascimento;
             cotacaoExistente.DataAtualizacao = DateTime.Now;
 
             return cotacaoExistente;

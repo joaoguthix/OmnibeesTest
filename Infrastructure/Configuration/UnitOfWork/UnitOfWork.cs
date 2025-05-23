@@ -29,7 +29,7 @@ namespace Infrastructure.Configuration.UnitOfWork
                 await _connection.OpenAsync();
 
             _transaction = await _connection.BeginTransactionAsync();
-            _context.Database.UseTransaction(_transaction); // tudo compartilhado agora
+            _context.Database.UseTransaction(_transaction);// compartilhar transação com o EF e Dapper, facilita gerenciamento e atomicidade
         }
 
         public async Task CommitAsync()

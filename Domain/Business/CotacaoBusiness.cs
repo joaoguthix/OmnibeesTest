@@ -19,10 +19,11 @@ namespace Domain.Business
             _parceiroBusiness = parceiroBusiness;
         }
 
-        public async Task<int> AddCotacaoAsync(Cotacao cotacao)
+        public async Task<int> AddCotacaoAsync(Cotacao cotacao, string secret)
         {
             try
             {
+                await _parceiroBusiness.GetParceiroBySecretAsync(secret);
                 await ValidateCotacaoAsync(cotacao);
                 await ValidateImportanciaSegurada(cotacao);
 
@@ -176,7 +177,7 @@ namespace Domain.Business
             if (cotacao.Nascimento != null)
             {
                 var faixaIdades = await _faixaIdadeBusiness.GetFaixaIdadesAsync();
-                var idade = DateTime.Now.Year - cotacao.Nascimento.Value.Year;
+                var idade = DateTime.Now.Year - cotacao.Nascimento.Year;
                 if (cotacao.Nascimento > DateTime.Now.AddYears(-idade)) idade--;
 
                 if (!faixaIdades.Any(faixa => idade >= faixa.IdadeMinima && idade <= faixa.IdadeMaxima))

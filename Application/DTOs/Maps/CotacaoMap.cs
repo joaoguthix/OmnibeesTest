@@ -91,6 +91,39 @@ namespace Application.DTOs.Maps
                 IdCobertura = cotacao.IdCobertura
             }).ToList();
         }
+        public static CotacaoAggregateDTO MapToCotacaoAggregate(CotacaoAggregate cotacao)
+        {
+            var cotacaoAggregate = new CotacaoAggregateDTO()
+            {
+                Id = cotacao.Id,
+                NomeSegurado = cotacao.NomeSegurado,
+                Documento = cotacao.Documento,
+                DDD = cotacao.DDD,
+                Telefone = cotacao.Telefone,
+                Endereco = cotacao.Endereco,
+                CEP = cotacao.CEP,
+                Nascimento = cotacao.Nascimento.ToString("d"),
+                IdProduto = cotacao.IdProduto,
+                IdParceiro = cotacao.IdParceiro,
+                Premio = cotacao.Premio,
+                ImportanciaSegurada = cotacao.ImportanciaSegurada,
+                CotacaoBeneficiarios = cotacao.CotacaoBeneficiarios.Select(b => new CotacaoBeneficiario
+                {
+                    Id = b.Id,
+                    Nome = b.Nome,
+                    Percentual = b.Percentual
+                }).ToList(),
+                CotacaoCoberturas = cotacao.CotacaoCoberturas.Select(c => new CotacaoCobertura
+                {
+                    Id = c.Id,
+                    ValorAgravo = c.ValorAgravo,
+                    ValorDesconto = c.ValorDesconto,
+                    ValorTotal = c.ValorTotal,
+                    IdCobertura = c.IdCobertura
+                }).ToList() 
+            };
+            return cotacaoAggregate;
+        }
 
         //public List<CotacaoBeneficiario> MapToCotacaoBeneficiarioEntities(List<CotacaoBeneficiarioDTO> dtos, int idCotacao)
         //{

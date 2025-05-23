@@ -4,6 +4,7 @@ using Infrastructure.Configuration.Dapper;
 
 namespace Infrastructure.Repository.Generic
 {
+    // optei por nào utilizar e configureei o UOW
     public class BaseRepository
     {
         private readonly IDbConnectionFactory _connectionFactory;
