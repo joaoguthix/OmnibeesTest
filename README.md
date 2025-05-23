@@ -1,6 +1,5 @@
 ## Sumário
 
-- [Sobre o Projeto](#sobre-o-projeto)
 - [Tecnologias](#tecnologias)
 - [MER Banco](#mer-banco)
 - [Scripts](#scripts)
@@ -8,16 +7,6 @@
 
 ---
 
-## Sobre o Projeto
-
-O **OmnibessTest** é um sistema para gestão de cotações e beneficiários, utilizando .NET 8 com integração de ORM, micro-ORM e testes automatizados. 
-
-O projeto aplica:
-- Clean Architecture.
-- Padrões de desenvolvimento.
-- Boas práticas de testes unitários e integração.
-
----
 
 ## Tecnologias
 
