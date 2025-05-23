@@ -1,0 +1,81 @@
+﻿// Cotacao
+Table Cotacao {
+  Id int [pk, increment]
+  IdProduto int
+  DataCriacao datetime
+  DataAtualizacao datetime
+  IdParceiro int
+  NomeSegurado nvarchar(100)
+  DDD nvarchar(5)
+  Telefone nvarchar(15)
+  Endereco nvarchar(255)
+  CEP nvarchar(10)
+  Documento nvarchar(20)
+  Nascimento datetime
+  Premio decimal(18,2)
+  ImportanciaSegurada decimal(18,2)
+}
+
+// CotacaoBeneficiario
+Table CotacaoBeneficiario {
+  Id int [pk, increment]
+  IdCotacao int
+  Nome nvarchar(100)
+  Percentual decimal(5,2)
+  IdParentesco int
+}
+
+// CotacaoCobertura
+Table CotacaoCobertura {
+  Id int [pk, increment]
+  IdCotacao int
+  IdCobertura int
+  ValorDesconto decimal(18,2)
+  ValorAgravo decimal(18,2)
+  ValorTotal decimal(18,2)
+}
+
+// Cobertura
+Table Cobertura {
+  Id int [pk]
+  Description nvarchar(100)
+  Type nvarchar(20)
+  Value decimal(18,2)
+}
+
+// FaixaIdade
+Table FaixaIdade {
+  Id int [pk]
+  Description nvarchar(50)
+  Desconto decimal(5,2)
+  Agravo decimal(5,2)
+}
+
+// Produto
+Table Produto {
+  Id int [pk]
+  Description nvarchar(100)
+  BaseValue decimal(18,2)
+  Limite decimal(18,2)
+}
+
+// Parceiro
+Table Parceiro {
+  Id int [pk]
+  Description nvarchar(100)
+  Secret nvarchar(50)
+}
+
+// TipoParentesco
+Table TipoParentesco {
+  Id int [pk]
+  Description nvarchar(50)
+}
+
+// Relations
+Ref: Cotacao.IdProduto > Produto.Id
+Ref: Cotacao.IdParceiro > Parceiro.Id
+Ref: CotacaoBeneficiario.IdCotacao > Cotacao.Id
+Ref: CotacaoBeneficiario.IdParentesco > TipoParentesco.Id
+Ref: CotacaoCobertura.IdCotacao > Cotacao.Id
+Ref: CotacaoCobertura.IdCobertura > Cobertura.Id
