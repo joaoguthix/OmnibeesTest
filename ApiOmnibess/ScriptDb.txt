@@ -1,0 +1,125 @@
+﻿-- Banco de Dados
+CREATE DATABASE OmniBees;
+GO
+USE OmniBees;
+
+CREATE TABLE Cotacao (
+    Id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+    IdProduto INT NOT NULL, -- Alterado para INT
+    DataCriacao DATETIME NOT NULL,
+    DataAtualizacao DATETIME NOT NULL,
+    IdParceiro INT NOT NULL, -- Alterado para INT
+    NomeSegurado NVARCHAR(100) NOT NULL,
+    DDD NVARCHAR(5) NULL,
+    Telefone NVARCHAR(15) NULL,
+    Endereco NVARCHAR(255) NOT NULL,
+    CEP NVARCHAR(10) NOT NULL,
+    Documento NVARCHAR(20) NOT NULL,
+    Nascimento DATETIME NOT NULL,
+    Premio DECIMAL(18,2) NOT NULL,
+    ImportanciaSegurada DECIMAL(18,2) NOT NULL
+);
+GO
+
+CREATE TABLE CotacaoBeneficiario (
+    Id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+    IdCotacao INT NOT NULL, -- Alterado para INT
+    Nome NVARCHAR(100) NOT NULL,
+    Percentual DECIMAL(5,2) NOT NULL,
+    IdParentesco INT NOT NULL, -- Alterado para INT
+
+    CONSTRAINT FK_CotacaoBeneficiario_Cotacao FOREIGN KEY (IdCotacao)
+        REFERENCES Cotacao(Id)
+        ON DELETE CASCADE
+);
+GO
+
+CREATE TABLE CotacaoCobertura (
+    Id INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+    IdCotacao INT NOT NULL, -- Alterado para INT
+    IdCobertura INT NOT NULL, -- Alterado para INT
+    ValorDesconto DECIMAL(18,2) NULL,
+    ValorAgravo DECIMAL(18,2) NULL,
+    ValorTotal DECIMAL(18,2) NOT NULL,
+
+    CONSTRAINT FK_CotacaoCobertura_Cotacao FOREIGN KEY (IdCotacao)
+        REFERENCES Cotacao(Id)
+        ON DELETE CASCADE
+);
+GO
+
+CREATE TABLE Cobertura (
+    Id INT PRIMARY KEY,
+    Description NVARCHAR(100) NOT NULL,
+    Type NVARCHAR(20) NOT NULL,
+    Value DECIMAL(18,2) NOT NULL
+);
+GO
+
+CREATE TABLE FaixaIdade (
+    Id INT PRIMARY KEY,
+    Description NVARCHAR(50) NOT NULL,
+    Desconto DECIMAL(5,2) NOT NULL,
+    Agravo DECIMAL(5,2) NOT NULL
+);
+GO
+
+-- Tabela: Produto
+CREATE TABLE Produto (
+    Id INT PRIMARY KEY,
+    Description NVARCHAR(100) NOT NULL,
+    BaseValue DECIMAL(18,2) NOT NULL,
+    Limite DECIMAL(18,2) NOT NULL
+);
+GO
+
+-- Tabela: Parceiro
+CREATE TABLE Parceiro (
+    Id INT PRIMARY KEY,
+    Description NVARCHAR(100) NOT NULL,
+    Secret NVARCHAR(50) NOT NULL
+);
+GO
+
+-- Tabela: TipoParentesco
+CREATE TABLE TipoParentesco (
+    Id INT PRIMARY KEY,
+    Description NVARCHAR(50) NOT NULL
+);
+GO
+
+-- Produto
+INSERT INTO Produto (Id, Description, BaseValue, Limite) VALUES
+(1, 'Vida Starter', 10.00, 10000.00),
+(2, 'Vida AP+', 12.50, 20000.00),
+(3, 'Vida Plus Master', 20.00, 100000.00),
+(4, 'Vida Galaxy Membership', 4500.00, 10000000.00);
+
+-- Parceiro
+INSERT INTO Parceiro (Id, Description, Secret) VALUES
+(1, 'Lojas Jackellino', 'XPTO2'),
+(2, 'Rede Cusco de La Rocha', 'IDKFA'),
+(3, '2 Irmãos Global Membership Traders', 'IDDOQD');
+
+-- TipoParentesco
+INSERT INTO TipoParentesco (Id, Description) VALUES
+(1, 'Mãe'),
+(2, 'Pai'),
+(3, 'Cônjuge'),
+(4, 'Filho(a)'),
+(5, 'Outros');
+
+INSERT INTO Cobertura (Id, Description, Type, Value) VALUES
+(1, 'Morte Acidental', 'Básica', 40.00),
+(2, 'Morte Qualquer Causa', 'Básica', 36.50),
+(3, 'Invalidez Parcial ou Total', 'Básica', 28.95),
+(4, 'Assistência Funeral', 'Adicional', 18.96),
+(5, 'Assistência Odontológica', 'Adicional', 12.55),
+(6, 'Assistência PET', 'Adicional', 15.33);
+
+INSERT INTO FaixaIdade (Id, Description, Desconto, Agravo) VALUES
+(1, '6 a 18 Anos', 20.00, 0.00),
+(2, '19 a 25 Anos', 10.00, 0.00),
+(3, '26 a 35 Anos', 0.00, 0.00),
+(4, '36 a 42 Anos', 0.00, 20.00),
+(5, '42 a 65 Anos', 0.00, 40.00);
